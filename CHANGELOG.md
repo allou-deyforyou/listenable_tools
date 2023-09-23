@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Edit FailureState
+
 ## 0.0.6
 
 * Improve AsyncEvent

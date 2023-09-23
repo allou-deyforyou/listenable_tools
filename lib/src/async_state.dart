@@ -25,7 +25,7 @@ class FailureState<T extends AsyncEvent> extends AsyncState {
     this.event,
   });
   final String code;
-  final AsyncEvent? event;
+  final T? event;
 }
 
 abstract class AsyncEvent<T extends AsyncNotifier> {
@@ -40,6 +40,7 @@ class AsyncNotifier<T extends AsyncState> extends ValueNotifier<T> {
   }) : super(initialState);
   final T initialState;
   final bool debug;
+
 
   @override
   set value(T newValue) {
