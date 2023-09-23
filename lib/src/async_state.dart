@@ -28,9 +28,9 @@ class FailureState<T extends AsyncEvent> extends AsyncState {
   final AsyncEvent? event;
 }
 
-abstract class AsyncEvent {
+abstract class AsyncEvent<T extends AsyncNotifier> {
   const AsyncEvent();
-  Future<void> handle(AsyncNotifier notifier);
+  Future<void> handle(T notifier);
 }
 
 class AsyncNotifier<T extends AsyncState> extends ValueNotifier<T> {

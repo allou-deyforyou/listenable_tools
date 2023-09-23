@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Improve AsyncEvent
+
 ## 0.0.5
 
 * Improve AsyncState, AsyncEvent and AsyncNotifier
