@@ -1,5 +1,9 @@
 ## 0.0.4
 
+* Improve AsyncState, AsyncEvent and AsyncNotifier
+
+## 0.0.4
+
 * Modify AsyncNotifier
 
 ## 0.0.3

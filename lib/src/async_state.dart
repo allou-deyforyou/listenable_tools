@@ -6,21 +6,21 @@ abstract class AsyncState {
   const AsyncState();
 }
 
-class Initial extends AsyncState {
-  const Initial();
+class InitialState extends AsyncState {
+  const InitialState();
 }
 
-class Pending extends AsyncState {
-  const Pending();
+class PendingState extends AsyncState {
+  const PendingState();
 }
 
-class Success<T> extends AsyncState {
-  const Success(this.data);
+class SuccessState<T> extends AsyncState {
+  const SuccessState(this.data);
   final T data;
 }
 
-class Failure<T extends AsyncEvent> extends AsyncState {
-  const Failure({
+class FailureState<T extends AsyncEvent> extends AsyncState {
+  const FailureState({
     required this.code,
     this.event,
   });
@@ -28,7 +28,7 @@ class Failure<T extends AsyncEvent> extends AsyncState {
   final AsyncEvent? event;
 }
 
-sealed class AsyncEvent {
+abstract class AsyncEvent {
   const AsyncEvent();
   Future<void> handle(AsyncNotifier notifier);
 }
