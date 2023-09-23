@@ -5,39 +5,39 @@ typedef ValueWidgetListener<T> = void Function(BuildContext context, T value);
 
 typedef ValueCanCallBack<T> = bool Function(T previousState, T currentState);
 
-class ValuelistenableBuilder<T> extends StatefulWidget {
-  const ValuelistenableBuilder({
+class ValueNotifierBuilder<T> extends StatefulWidget {
+  const ValueNotifierBuilder({
     super.key,
-    required this.valueListenable,
+    required this.valueNotifier,
     required this.builder,
     this.canRebuild,
     this.child,
   });
 
-  final ValueListenable<T> valueListenable;
+  final ValueListenable<T> valueNotifier;
   final ValueWidgetBuilder<T> builder;
   final ValueCanCallBack<T>? canRebuild;
   final Widget? child;
 
   @override
-  State<StatefulWidget> createState() => _ValuelistenableBuilderState<T>();
+  State<StatefulWidget> createState() => _ValueNotifierBuilderState<T>();
 }
 
-class _ValuelistenableBuilderState<T> extends State<ValuelistenableBuilder<T>> {
+class _ValueNotifierBuilderState<T> extends State<ValueNotifierBuilder<T>> {
   late T _value;
 
   void _initValueState() {
-    _value = widget.valueListenable.value;
-    widget.valueListenable.addListener(_valueChanged);
+    _value = widget.valueNotifier.value;
+    widget.valueNotifier.addListener(_valueChanged);
   }
 
   bool _canRebuild() {
-    final canRebuild = widget.canRebuild?.call(_value, widget.valueListenable.value);
+    final canRebuild = widget.canRebuild?.call(_value, widget.valueNotifier.value);
     return canRebuild == null || canRebuild;
   }
 
   void _valueChanged() {
-    if (_canRebuild()) setState(() => _value = widget.valueListenable.value);
+    if (_canRebuild()) setState(() => _value = widget.valueNotifier.value);
   }
 
   @override
@@ -47,17 +47,17 @@ class _ValuelistenableBuilderState<T> extends State<ValuelistenableBuilder<T>> {
   }
 
   @override
-  void didUpdateWidget(ValuelistenableBuilder<T> oldWidget) {
+  void didUpdateWidget(ValueNotifierBuilder<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.valueListenable != widget.valueListenable) {
-      oldWidget.valueListenable.removeListener(_valueChanged);
+    if (oldWidget.valueNotifier != widget.valueNotifier) {
+      oldWidget.valueNotifier.removeListener(_valueChanged);
       _initValueState();
     }
   }
 
   @override
   void dispose() {
-    widget.valueListenable.removeListener(_valueChanged);
+    widget.valueNotifier.removeListener(_valueChanged);
     super.dispose();
   }
 
@@ -65,43 +65,43 @@ class _ValuelistenableBuilderState<T> extends State<ValuelistenableBuilder<T>> {
   Widget build(BuildContext context) => widget.builder(context, _value, widget.child);
 }
 
-class ValueListenableListener<T> extends StatefulWidget {
-  const ValueListenableListener({
+class ValueNotifierListener<T> extends StatefulWidget {
+  const ValueNotifierListener({
     super.key,
-    required this.valueListenable,
+    required this.valueNotifier,
     this.autoListen = false,
     required this.listener,
     required this.child,
     this.canListen,
   });
 
-  final ValueListenable<T> valueListenable;
+  final ValueListenable<T> valueNotifier;
   final ValueWidgetListener<T> listener;
   final ValueCanCallBack<T>? canListen;
   final bool autoListen;
   final Widget child;
 
   @override
-  State<StatefulWidget> createState() => _ValueListenableListenerState<T>();
+  State<StatefulWidget> createState() => _ValueNotifierListenerState<T>();
 }
 
-class _ValueListenableListenerState<T> extends State<ValueListenableListener<T>> {
+class _ValueNotifierListenerState<T> extends State<ValueNotifierListener<T>> {
   late T _value;
 
   void _initValueState() {
-    _value = widget.valueListenable.value;
+    _value = widget.valueNotifier.value;
     if (widget.autoListen) _valueChanged();
-    widget.valueListenable.addListener(_valueChanged);
+    widget.valueNotifier.addListener(_valueChanged);
   }
 
   bool _canListen() {
-    final canListen = widget.canListen?.call(_value, widget.valueListenable.value);
+    final canListen = widget.canListen?.call(_value, widget.valueNotifier.value);
     return canListen == null || canListen;
   }
 
   void _valueChanged() {
     if (_canListen()) {
-      widget.listener(context, _value = widget.valueListenable.value);
+      widget.listener(context, _value = widget.valueNotifier.value);
     }
   }
 
@@ -112,17 +112,17 @@ class _ValueListenableListenerState<T> extends State<ValueListenableListener<T>>
   }
 
   @override
-  void didUpdateWidget(ValueListenableListener<T> oldWidget) {
+  void didUpdateWidget(ValueNotifierListener<T> oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.valueListenable != widget.valueListenable) {
-      oldWidget.valueListenable.removeListener(_valueChanged);
+    if (oldWidget.valueNotifier != widget.valueNotifier) {
+      oldWidget.valueNotifier.removeListener(_valueChanged);
       _initValueState();
     }
   }
 
   @override
   void dispose() {
-    widget.valueListenable.removeListener(_valueChanged);
+    widget.valueNotifier.removeListener(_valueChanged);
     super.dispose();
   }
 
@@ -130,10 +130,10 @@ class _ValueListenableListenerState<T> extends State<ValueListenableListener<T>>
   Widget build(BuildContext context) => widget.child;
 }
 
-class ValueListenableConsumer<T> extends StatelessWidget {
-  const ValueListenableConsumer({
+class ValueNotifierConsumer<T> extends StatelessWidget {
+  const ValueNotifierConsumer({
     super.key,
-    required this.valueListenable,
+    required this.valueNotifier,
     this.autoListen = false,
     required this.listener,
     required this.builder,
@@ -142,7 +142,7 @@ class ValueListenableConsumer<T> extends StatelessWidget {
     this.child,
   });
 
-  final ValueListenable<T> valueListenable;
+  final ValueListenable<T> valueNotifier;
   final ValueWidgetListener<T> listener;
   final ValueCanCallBack<T>? canListen;
   final ValueCanCallBack<T>? canRebuild;
@@ -153,17 +153,47 @@ class ValueListenableConsumer<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableListener<T>(
-      valueListenable: valueListenable,
+    return ValueNotifierListener<T>(
+      valueNotifier: valueNotifier,
       autoListen: autoListen,
       canListen: canListen,
       listener: listener,
-      child: ValuelistenableBuilder<T>(
-        valueListenable: valueListenable,
+      child: ValueNotifierBuilder<T>(
+        valueNotifier: valueNotifier,
         canRebuild: canRebuild,
         builder: builder,
         child: child,
       ),
     );
+  }
+}
+
+class MultiValueNotifierListener<T> extends StatelessWidget {
+  const MultiValueNotifierListener({
+    super.key,
+    required this.valueNotifiers,
+    this.autoListen = false,
+    required this.listener,
+    required this.child,
+    this.canListen,
+  });
+
+  final List<ValueListenable<T>> valueNotifiers;
+  final ValueWidgetListener<T> listener;
+  final ValueCanCallBack<T>? canListen;
+  final bool autoListen;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return valueNotifiers.fold(child, (child, item) {
+      return ValueNotifierListener<T>(
+        autoListen: autoListen,
+        valueNotifier: item,
+        canListen: canListen,
+        listener: listener,
+        child: child,
+      );
+    });
   }
 }

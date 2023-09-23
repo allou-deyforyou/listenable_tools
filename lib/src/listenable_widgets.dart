@@ -1,36 +1,36 @@
 import 'package:flutter/widgets.dart';
 
-typedef ListenableWidgetListener<T extends Listenable> = void Function(BuildContext context, T listenable);
+typedef NotifierWidgetListener = void Function(BuildContext context);
 
-typedef ListenableCanCallBack<T extends Listenable> = bool Function(T listenable);
+typedef NotifierCanCallBack = bool Function();
 
-typedef ListenableWidgetBuilder<T extends Listenable> = Widget Function(BuildContext context, T value, Widget? child);
+typedef NotifierWidgetBuilder = Widget Function(BuildContext context, Widget? child);
 
-class ListenableBuilder<T extends Listenable> extends StatefulWidget {
-  const ListenableBuilder({
+class NotifierBuilder extends StatefulWidget {
+  const NotifierBuilder({
     super.key,
-    required this.listenable,
+    required this.notifier,
     required this.builder,
     this.canRebuild,
     this.child,
   });
 
-  final T listenable;
-  final ListenableWidgetBuilder<T> builder;
-  final ListenableCanCallBack<T>? canRebuild;
+  final Listenable notifier;
+  final NotifierWidgetBuilder builder;
+  final NotifierCanCallBack? canRebuild;
   final Widget? child;
 
   @override
-  State<StatefulWidget> createState() => _ListenableBuilderState<T>();
+  State<StatefulWidget> createState() => _NotifierBuilderState();
 }
 
-class _ListenableBuilderState<T extends Listenable> extends State<ListenableBuilder<T>> {
+class _NotifierBuilderState extends State<NotifierBuilder> {
   void _initValueState() {
-    widget.listenable.addListener(_valueChanged);
+    widget.notifier.addListener(_valueChanged);
   }
 
   bool _canRebuild() {
-    final canRebuild = widget.canRebuild?.call(widget.listenable);
+    final canRebuild = widget.canRebuild?.call();
     return canRebuild == null || canRebuild;
   }
 
@@ -45,58 +45,58 @@ class _ListenableBuilderState<T extends Listenable> extends State<ListenableBuil
   }
 
   @override
-  void didUpdateWidget(ListenableBuilder<T> oldWidget) {
+  void didUpdateWidget(NotifierBuilder oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.listenable != widget.listenable) {
-      oldWidget.listenable.removeListener(_valueChanged);
+    if (oldWidget.notifier != widget.notifier) {
+      oldWidget.notifier.removeListener(_valueChanged);
       _initValueState();
     }
   }
 
   @override
   void dispose() {
-    widget.listenable.removeListener(_valueChanged);
+    widget.notifier.removeListener(_valueChanged);
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => widget.builder(context, widget.listenable, widget.child);
+  Widget build(BuildContext context) => widget.builder(context, widget.child);
 }
 
-class ListenableListener<T extends Listenable> extends StatefulWidget {
-  const ListenableListener({
+class NotifierListener extends StatefulWidget {
+  const NotifierListener({
     super.key,
-    required this.listenable,
+    required this.notifier,
     this.autoListen = false,
     required this.listener,
     required this.child,
     this.canListen,
   });
 
-  final T listenable;
-  final ListenableWidgetListener<T> listener;
-  final ListenableCanCallBack<T>? canListen;
+  final Listenable notifier;
+  final NotifierWidgetListener listener;
+  final NotifierCanCallBack? canListen;
   final bool autoListen;
   final Widget child;
 
   @override
-  State<StatefulWidget> createState() => _ListenableListenerState<T>();
+  State<StatefulWidget> createState() => _NotifierListenerState();
 }
 
-class _ListenableListenerState<T extends Listenable> extends State<ListenableListener<T>> {
+class _NotifierListenerState extends State<NotifierListener> {
   void _initValueState() {
     if (widget.autoListen) _valueChanged();
-    widget.listenable.addListener(_valueChanged);
+    widget.notifier.addListener(_valueChanged);
   }
 
   bool _canListen() {
-    final canListen = widget.canListen?.call(widget.listenable);
+    final canListen = widget.canListen?.call();
     return canListen == null || canListen;
   }
 
   void _valueChanged() {
     if (_canListen()) {
-      widget.listener(context, widget.listenable);
+      widget.listener(context);
     }
   }
 
@@ -107,17 +107,17 @@ class _ListenableListenerState<T extends Listenable> extends State<ListenableLis
   }
 
   @override
-  void didUpdateWidget(ListenableListener<T> oldWidget) {
+  void didUpdateWidget(NotifierListener oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.listenable != widget.listenable) {
-      oldWidget.listenable.removeListener(_valueChanged);
+    if (oldWidget.notifier != widget.notifier) {
+      oldWidget.notifier.removeListener(_valueChanged);
       _initValueState();
     }
   }
 
   @override
   void dispose() {
-    widget.listenable.removeListener(_valueChanged);
+    widget.notifier.removeListener(_valueChanged);
     super.dispose();
   }
 
@@ -125,10 +125,10 @@ class _ListenableListenerState<T extends Listenable> extends State<ListenableLis
   Widget build(BuildContext context) => widget.child;
 }
 
-class ListenableConsumer<T extends Listenable> extends StatelessWidget {
-  const ListenableConsumer({
+class NotifierConsumer extends StatelessWidget {
+  const NotifierConsumer({
     super.key,
-    required this.listenable,
+    required this.notifier,
     this.autoListen = false,
     required this.listener,
     required this.builder,
@@ -137,24 +137,117 @@ class ListenableConsumer<T extends Listenable> extends StatelessWidget {
     this.child,
   });
 
-  final T listenable;
-  final ListenableWidgetListener<T> listener;
-  final ListenableCanCallBack<T>? canListen;
-  final ListenableCanCallBack<T>? canRebuild;
-  final ListenableWidgetBuilder<T> builder;
+  final Listenable notifier;
+  final NotifierWidgetListener listener;
+  final NotifierCanCallBack? canRebuild;
+  final NotifierCanCallBack? canListen;
+  final NotifierWidgetBuilder builder;
   final bool autoListen;
 
   final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    return ListenableListener<T>(
-      listenable: listenable,
+    return NotifierListener(
+      notifier: notifier,
       autoListen: autoListen,
       canListen: canListen,
       listener: listener,
-      child: ListenableBuilder<T>(
-        listenable: listenable,
+      child: NotifierBuilder(
+        notifier: notifier,
+        canRebuild: canRebuild,
+        builder: builder,
+        child: child,
+      ),
+    );
+  }
+}
+
+class MultiNotifierBuilder extends StatelessWidget {
+  const MultiNotifierBuilder({
+    super.key,
+    required this.notifiers,
+    required this.builder,
+    this.canRebuild,
+    this.child,
+  });
+
+  final List<Listenable> notifiers;
+  final NotifierWidgetBuilder builder;
+  final NotifierCanCallBack? canRebuild;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return NotifierBuilder(
+      notifier: Listenable.merge(notifiers),
+      canRebuild: canRebuild,
+      builder: builder,
+      child: child,
+    );
+  }
+}
+
+class MultiNotifierListener extends StatelessWidget {
+  const MultiNotifierListener({
+    super.key,
+    required this.notifiers,
+    this.autoListen = false,
+    required this.listener,
+    required this.child,
+    this.canListen,
+  });
+
+  final List<Listenable> notifiers;
+  final NotifierWidgetListener listener;
+  final NotifierCanCallBack? canListen;
+  final bool autoListen;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return notifiers.fold(child, (child, item) {
+      return NotifierListener(
+        autoListen: autoListen,
+        canListen: canListen,
+        listener: listener,
+        notifier: item,
+        child: child,
+      );
+    });
+  }
+}
+
+class MultiNotifierConsumer extends StatelessWidget {
+  const MultiNotifierConsumer({
+    super.key,
+    required this.notifiers,
+    this.autoListen = false,
+    required this.listener,
+    required this.builder,
+    this.canListen,
+    this.canRebuild,
+    this.child,
+  });
+
+  final List<Listenable> notifiers;
+  final NotifierWidgetListener listener;
+  final NotifierCanCallBack? canRebuild;
+  final NotifierCanCallBack? canListen;
+  final NotifierWidgetBuilder builder;
+  final bool autoListen;
+
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiNotifierListener(
+      notifiers: notifiers,
+      autoListen: autoListen,
+      canListen: canListen,
+      listener: listener,
+      child: MultiNotifierBuilder(
+        notifiers: notifiers,
         canRebuild: canRebuild,
         builder: builder,
         child: child,
