@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-sealed class AsyncState {
+abstract class AsyncState {
   const AsyncState();
 }
 
@@ -33,20 +33,23 @@ sealed class AsyncEvent {
   Future<void> handle(AsyncNotifier notifier);
 }
 
-class AsyncNotifier extends ValueNotifier<AsyncState> {
-  AsyncNotifier([
-    super.value = const Initial(),
+class AsyncNotifier<T extends AsyncState> extends ValueNotifier<T> {
+  AsyncNotifier({
+    required this.initialState,
     this.debug = kDebugMode,
-  ]);
+  }) : super(initialState);
+  final T initialState;
   final bool debug;
 
   @override
-  set value(AsyncState newValue) {
+  set value(T newValue) {
     super.value = newValue;
     if (debug) debugPrint('$runtimeType($newValue)');
   }
 
-  Future<AsyncState> add(AsyncEvent event) {
+  Future<T> add(AsyncEvent event) {
     return event.handle(this).then((_) => value);
   }
+
+  void reset() => value = initialState;
 }

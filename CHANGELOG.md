@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Modify AsyncNotifier
+
 ## 0.0.3
 
 * Add AsyncState, AsyncEvent and AsyncNotifier
