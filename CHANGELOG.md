@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Remove BuildContext from AsyncEvent
+
 ## 1.0.0
 
 * Refactory all code

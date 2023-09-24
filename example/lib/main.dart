@@ -9,7 +9,7 @@ class Increment extends AsyncEvent<int> {
   const Increment({required this.value});
   final int value;
   @override
-  Stream<int> handle(BuildContext context) async* {
+  Stream<int> handle(int? currentValue) async* {
     yield value + 1;
   }
 }
@@ -18,7 +18,7 @@ class Decrement extends AsyncEvent<int> {
   const Decrement({required this.value});
   final int value;
   @override
-  Stream<int> handle(BuildContext context) async* {
+  Stream<int> handle(int? currentValue) async* {
     yield value - 1;
   }
 }
@@ -77,11 +77,11 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
-    Increment(value: _counter).dispatch(context);
+    Increment(value: _counter).dispatch();
   }
 
   void _decrementCounter() {
-    context.dispatch(Decrement(value: _counter));
+    Decrement(value: _counter).dispatch();
   }
 
   @override

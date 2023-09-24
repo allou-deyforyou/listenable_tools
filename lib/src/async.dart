@@ -15,12 +15,6 @@ ValueNotifier<T?> _getController<T>({Type? instanceType}) {
   );
 }
 
-extension AsyncBuildContext on BuildContext {
-  void dispatch<T>(AsyncEvent<T> event) {
-    event.dispatch(this);
-  }
-}
-
 abstract class AsyncState {
   const AsyncState();
 }
@@ -46,12 +40,12 @@ class FailureState<T extends AsyncEvent> extends AsyncState {
 abstract class AsyncEvent<T> {
   const AsyncEvent();
 
-  Future<void> dispatch(BuildContext context) {
+  Future<void> dispatch() {
     final controller = _getController<T>(instanceType: runtimeType);
-    return handle(context).forEach((value) => controller.value = value);
+    return handle(controller.value).forEach((value) => controller.value = value);
   }
-
-  Stream<T> handle(BuildContext context);
+  @protected
+  Stream<T> handle(T? currentValue);
 }
 
 class AsyncBuilder<T extends AsyncEvent<S>, S> extends StatelessWidget {
