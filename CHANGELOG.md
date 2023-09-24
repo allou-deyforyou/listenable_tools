@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Refactory all code
+
 ## 0.0.7
 
 * Edit FailureState
