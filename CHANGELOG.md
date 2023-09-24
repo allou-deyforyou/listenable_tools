@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Remove all Async
+
 ## 1.0.1
 
 * Remove BuildContext from AsyncEvent
