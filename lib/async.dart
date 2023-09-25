@@ -4,6 +4,8 @@ import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 
+typedef AsyncEmitter<T> = void Function(T value);
+
 abstract class AsyncState {
   const AsyncState();
 
@@ -54,7 +56,7 @@ class FailureState<T extends AsyncEvent> extends AsyncState {
 abstract class AsyncEvent<T> {
   const AsyncEvent();
   @protected
-  Stream<T> handle(T currentState);
+  Future<void> handle(ValueChanged<T> emit);
 }
 
 class AsyncController<T> extends ValueNotifier<T> {
@@ -62,7 +64,7 @@ class AsyncController<T> extends ValueNotifier<T> {
   final T initState;
   final bool debug;
 
-  ValueChanged<T> _notifier(AsyncEvent<T> event) {
+  AsyncEmitter<T> _notifier(AsyncEvent<T> event) {
     return (T value) {
       super.value = value;
       if (debug) debugPrint('${event.runtimeType}($value)');
@@ -70,7 +72,7 @@ class AsyncController<T> extends ValueNotifier<T> {
   }
 
   void reset() => value = initState;
-  Future<void> run(AsyncEvent<T> event) => event.handle(value).forEach(_notifier(event));
+  Future<void> run(AsyncEvent<T> event) => event.handle(_notifier(event));
 }
 
 class Singleton {

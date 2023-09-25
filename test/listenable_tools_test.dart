@@ -22,15 +22,15 @@ void main() {
 class Increment extends AsyncEvent<int> {
   const Increment();
   @override
-  Stream<int> handle(int currentState) async* {
-    yield currentState + 1;
+  Future<void> handle(AsyncEmitter<int> emit) async {
+    emit(0 + 1);
   }
 }
 
 class Decrement extends AsyncEvent<int> {
   const Decrement();
   @override
-  Stream<int> handle(int currentState) async* {
-    yield currentState - 1;
+  Future<void> handle(AsyncEmitter<int> emit) async {
+    emit(0 + 1);
   }
 }
