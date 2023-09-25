@@ -1,3 +1,7 @@
+## 1.0.4
+
+* Add Async to ListenableTools
+
 ## 1.0.3
 
 * Add Singleton
