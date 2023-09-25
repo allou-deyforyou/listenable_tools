@@ -6,6 +6,22 @@ import 'package:flutter/foundation.dart';
 
 abstract class AsyncState {
   const AsyncState();
+
+  Record get equality => ();
+
+  @override
+  bool operator ==(covariant AsyncState other) {
+    if (identical(this, other)) return true;
+    return other.equality == equality;
+  }
+
+  @override
+  int get hashCode => equality.hashCode;
+
+  @override
+  String toString() {
+    return '$runtimeType($equality)';
+  }
 }
 
 class InitState extends AsyncState {
@@ -19,6 +35,9 @@ class PendingState extends AsyncState {
 class SuccessState<T> extends AsyncState {
   const SuccessState(this.data);
   final T data;
+
+  @override
+  Record get equality => (data,);
 }
 
 class FailureState<T extends AsyncEvent> extends AsyncState {
@@ -28,6 +47,8 @@ class FailureState<T extends AsyncEvent> extends AsyncState {
   });
   final String code;
   final T? event;
+  @override
+  Record get equality => (code, event);
 }
 
 abstract class AsyncEvent<T> {
@@ -37,7 +58,8 @@ abstract class AsyncEvent<T> {
 }
 
 class AsyncController<T> extends ValueNotifier<T> {
-  AsyncController(super.value, {this.debug = kDebugMode});
+  AsyncController(this.initState, {this.debug = kDebugMode}) : super(initState);
+  final T initState;
   final bool debug;
 
   ValueChanged<T> _notifier(AsyncEvent<T> event) {
@@ -47,6 +69,7 @@ class AsyncController<T> extends ValueNotifier<T> {
     };
   }
 
+  void reset() => value = initState;
   Future<void> run(AsyncEvent<T> event) => event.handle(value).forEach(_notifier(event));
 }
 

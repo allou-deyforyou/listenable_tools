@@ -1,3 +1,7 @@
+## 1.0.5
+
+* Add Equality
+
 ## 1.0.4
 
 * Add Async to ListenableTools
