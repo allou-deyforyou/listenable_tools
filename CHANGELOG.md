@@ -1,3 +1,7 @@
+## 1.0.3
+
+* Add Singleton
+
 ## 1.0.2
 
 * Remove all Async

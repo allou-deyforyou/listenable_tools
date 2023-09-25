@@ -1,9 +1,15 @@
-import 'dart:developer';
+library listenable_tools.async;
+
+import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 
 abstract class AsyncState {
   const AsyncState();
+}
+
+class InitState extends AsyncState {
+  const InitState();
 }
 
 class PendingState extends AsyncState {
@@ -26,9 +32,8 @@ class FailureState<T extends AsyncEvent> extends AsyncState {
 
 abstract class AsyncEvent<T> {
   const AsyncEvent();
-
   @protected
-  Stream<T> handle();
+  Stream<T> handle(T currentState);
 }
 
 class AsyncController<T> extends ValueNotifier<T> {
@@ -38,9 +43,21 @@ class AsyncController<T> extends ValueNotifier<T> {
   ValueChanged<T> _notifier(AsyncEvent<T> event) {
     return (T value) {
       super.value = value;
-      if (debug) log('${event.runtimeType}($value)');
+      if (debug) debugPrint('${event.runtimeType}($value)');
     };
   }
 
-  Future<void> run(AsyncEvent<T> event) => event.handle().forEach(_notifier(event));
+  Future<void> run(AsyncEvent<T> event) => event.handle(value).forEach(_notifier(event));
+}
+
+class Singleton {
+  static Singleton? _singleton;
+
+  const Singleton._(this._entries);
+  final HashMap<Type, dynamic> _entries;
+
+  static T instance<T extends AsyncController>(T Function() createFunction) {
+    _singleton ??= Singleton._(HashMap<Type, T>());
+    return _singleton!._entries.putIfAbsent(T, createFunction);
+  }
 }
