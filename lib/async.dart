@@ -76,13 +76,12 @@ class AsyncController<T> extends ValueNotifier<T> {
 }
 
 class Singleton {
-  static Singleton? _singleton;
-
   const Singleton._(this._entries);
-  final HashMap<Type, dynamic> _entries;
+  final HashMap<String, dynamic> _entries;
 
-  static T instance<T extends AsyncController>(T Function() createFunction) {
-    _singleton ??= Singleton._(HashMap<Type, T>());
-    return _singleton!._entries.putIfAbsent(T, createFunction);
+  static Singleton? _singleton;
+  static T instance<T extends AsyncController>(T Function() createFunction, [String name = '']) {
+    _singleton ??= Singleton._(HashMap<String, T>());
+    return _singleton!._entries.putIfAbsent(T.runtimeType.toString() + name, createFunction);
   }
 }

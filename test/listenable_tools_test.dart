@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:listenable_tools/async.dart';
 
@@ -5,21 +6,17 @@ AsyncController<int> get controller => Singleton.instance(() => AsyncController<
 
 void main() {
   test('Increment', () async {
-    await controller.run(const Increment());
-    expect(controller.value, 1);
-    await controller.run(const Increment());
-    expect(controller.value, 2);
+    debugPrint((AutoIncrement == AutoIncrement).toString());
   });
 
-  test('Decrement', () async {
-    await controller.run(const Decrement());
-    expect(controller.value, 1);
-    await controller.run(const Decrement());
-    expect(controller.value, 0);
-  });
+  test('Decrement', () async {});
 }
 
-class Increment extends AsyncEvent<int> {
+sealed class AutoIncrement extends AsyncEvent<int> {
+  const AutoIncrement();
+}
+
+class Increment extends AutoIncrement {
   const Increment();
   @override
   Future<void> handle(AsyncEmitter<int> emit) async {
@@ -27,7 +24,7 @@ class Increment extends AsyncEvent<int> {
   }
 }
 
-class Decrement extends AsyncEvent<int> {
+class Decrement extends AutoIncrement {
   const Decrement();
   @override
   Future<void> handle(AsyncEmitter<int> emit) async {

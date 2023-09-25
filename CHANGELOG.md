@@ -1,3 +1,7 @@
+## 1.0.7
+
+* Add instanceName to Singleton
+
 ## 1.0.6
 
 * Add AsyncEmitter
