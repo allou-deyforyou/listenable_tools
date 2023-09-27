@@ -1,3 +1,7 @@
+## 1.0.8
+
+* Bugs Singleton
+
 ## 1.0.7
 
 * Add instanceName to Singleton

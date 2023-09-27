@@ -1,5 +1,6 @@
 library listenable_tools.async;
 
+import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
@@ -34,10 +35,16 @@ class PendingState extends AsyncState {
   const PendingState();
 }
 
+class SubscriptionState<T> extends AsyncState {
+  const SubscriptionState(this.subscription);
+  final StreamSubscription<T> subscription;
+  @override
+  Record get equality => (subscription,);
+}
+
 class SuccessState<T> extends AsyncState {
   const SuccessState(this.data);
   final T data;
-
   @override
   Record get equality => (data,);
 }
@@ -80,7 +87,7 @@ class Singleton {
   final HashMap<String, dynamic> _entries;
 
   static Singleton? _singleton;
-  static T instance<T extends AsyncController>(T Function() createFunction, [String name = '']) {
+  static T instance<T>(T Function() createFunction, [String name = '']) {
     _singleton ??= Singleton._(HashMap<String, T>());
     return _singleton!._entries.putIfAbsent(T.runtimeType.toString() + name, createFunction);
   }
