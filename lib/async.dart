@@ -2,6 +2,7 @@ library listenable_tools.async;
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 
@@ -74,7 +75,7 @@ class AsyncController<T> extends ValueNotifier<T> {
   AsyncEmitter<T> _notifier(AsyncEvent<T> event) {
     return (T value) {
       super.value = value;
-      if (debug) debugPrint('${event.runtimeType}($value)');
+      if (debug) log('${event.runtimeType}($value)');
     };
   }
 

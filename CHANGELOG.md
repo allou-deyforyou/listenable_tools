@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Change debugPrint by log
+
 ## 1.0.9
 
 * Bugs Singleton
