@@ -1,3 +1,8 @@
+## 1.0.9
+
+* Bugs Singleton
+
+
 ## 1.0.8
 
 * Bugs Singleton

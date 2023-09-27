@@ -88,7 +88,7 @@ class Singleton {
 
   static Singleton? _singleton;
   static T instance<T>(T Function() createFunction, [String name = '']) {
-    _singleton ??= Singleton._(HashMap<String, T>());
+    _singleton ??= Singleton._(HashMap<String, dynamic>());
     return _singleton!._entries.putIfAbsent(T.runtimeType.toString() + name, createFunction);
   }
 }
