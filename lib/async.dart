@@ -14,9 +14,9 @@ abstract class AsyncState {
   Record get equality => ();
 
   @override
-  bool operator ==(covariant AsyncState other) {
+  bool operator ==(covariant Object other) {
     if (identical(this, other)) return true;
-    return other.equality == equality;
+    return other is AsyncState && runtimeType == other.runtimeType && other.equality == equality;
   }
 
   @override

@@ -1,3 +1,7 @@
+## 1.1.1
+
+* Bugs AsyncState
+
 ## 1.1.0
 
 * Change debugPrint by log
