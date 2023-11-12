@@ -63,8 +63,13 @@ class FailureState<T extends AsyncEvent> extends AsyncState {
 
 abstract class AsyncEvent<T> {
   const AsyncEvent();
+  @override
+  String toString() {
+    return '$runtimeType';
+  }
+
   @protected
-  Future<void> handle(ValueChanged<T> emit);
+  Future<void> handle(AsyncEmitter<T> emit);
 }
 
 class AsyncController<T> extends ValueNotifier<T> {
@@ -92,4 +97,8 @@ class Singleton {
     _singleton ??= Singleton._(HashMap<String, dynamic>());
     return _singleton!._entries.putIfAbsent(T.runtimeType.toString() + name, createFunction);
   }
+}
+
+T singleton<T>(T value, [String name = '']) {
+  return Singleton.instance(() => value, name);
 }

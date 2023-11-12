@@ -1,3 +1,8 @@
+## 1.1.2
+
+* Change ValueChanged to AsyncEmitter
+* Add singleton function
+
 ## 1.1.1
 
 * Bugs AsyncState
@@ -9,7 +14,6 @@
 ## 1.0.9
 
 * Bugs Singleton
-
 
 ## 1.0.8
 
