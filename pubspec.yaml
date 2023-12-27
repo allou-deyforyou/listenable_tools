@@ -1,6 +1,6 @@
 name: listenable_tools
 description: Widgets to work with Listenable
-version: 1.1.2
+version: 2.0.0
 homepage: https://github.com/allou-deyforyou/listenable_tools
 
 environment:
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

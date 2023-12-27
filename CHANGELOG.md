@@ -1,3 +1,8 @@
+## 2.0.0
+
+* Refactory
+* Delete all consumer widget and replace by Builder
+
 ## 1.1.2
 
 * Change ValueChanged to AsyncEmitter

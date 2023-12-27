@@ -1,33 +1,41 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:listenable_tools/async.dart';
+import 'package:listenable_tools/listenable_tools.dart';
 
-AsyncController<int> get controller => Singleton.instance(() => AsyncController<int>(0));
+AsyncController<int> get controller =>
+    Singleton.instance(() => AsyncController<int>(0));
 
 void main() {
+  final controller = AsyncController<AsyncState>(const InitState());
   test('Increment', () async {
-    debugPrint((AutoIncrement == AutoIncrement).toString());
+    controller.run(const Increment());
+
+    debugPrint(controller.value.toString());
   });
 
-  test('Decrement', () async {});
+  test('Decrement', () async {
+    controller.run(const Decrement());
+
+    debugPrint(controller.value.toString());
+  });
 }
 
-sealed class AutoIncrement extends AsyncEvent<int> {
+sealed class AutoIncrement extends AsyncEvent<AsyncState> {
   const AutoIncrement();
 }
 
 class Increment extends AutoIncrement {
   const Increment();
   @override
-  Future<void> handle(AsyncEmitter<int> emit) async {
-    emit(0 + 1);
+  Future<void> handle(AsyncEmitter<AsyncState> emit) async {
+    emit(SuccessState(1, event: this));
   }
 }
 
 class Decrement extends AutoIncrement {
   const Decrement();
   @override
-  Future<void> handle(AsyncEmitter<int> emit) async {
-    emit(0 + 1);
+  Future<void> handle(AsyncEmitter<AsyncState> emit) async {
+    emit(SuccessState(2, event: this));
   }
 }
