@@ -47,10 +47,13 @@ class MyListenable extends ChangeNotifier {
 }
 
 class ListenableBuilderExample extends StatelessWidget {
-  final MyListenable myNotifier = MyListenable();
+  const ListenableBuilderExample({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
+    final MyListenable myNotifier = MyListenable();
+    
     return ListenableBuilder(
       listenable: myNotifier,
       builder: (context, child) {
@@ -69,13 +72,12 @@ class ListenableBuilderExample extends StatelessWidget {
 }
 ```
 
-## AsyncState and AsyncController
+## AsyncState, AsyncEvent and AsyncController
 
 ### AsyncState Classes
 
 - **`InitState`**: Represents the initial state of an asynchronous operation.
 - **`PendingState`**: Represents a state indicating that an asynchronous operation is pending.
-- **`SubscriptionState<T>`**: Represents a state with a subscribed `Stream`.
 - **`SuccessState<T>`**: Represents a state with successful data.
 - **`FailureState<T>`**: Represents a state with a failed asynchronous event.
 
@@ -93,6 +95,7 @@ class ListenableBuilderExample extends StatelessWidget {
 import 'package:flutter/widgets.dart';
 
 class MyAsyncEvent extends AsyncEvent<int> {
+  const MyAsyncEvent();
   @override
   Future<void> handle(AsyncEmitter<int> emit) async {
     await Future.delayed(Duration(seconds: 2));
@@ -101,10 +104,13 @@ class MyAsyncEvent extends AsyncEvent<int> {
 }
 
 class AsyncControllerExample extends StatelessWidget {
-  final AsyncController<int> myController = AsyncController<int>(0);
+  const AsyncControllerExample({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
+    final AsyncController<int> myController = AsyncController<int>(0, debug: true);
+    
     return ControllerBuilder(
       controller: myController,
       builder: (context, data, child) {
@@ -113,7 +119,7 @@ class AsyncControllerExample extends StatelessWidget {
             Text('Data: $data'),
             ElevatedButton(
               onPressed: () async {
-                await myController.run(MyAsyncEvent());
+                await myController.run(const MyAsyncEvent());
               },
               child: Text('Run Async Event'),
             ),
@@ -137,10 +143,13 @@ class AsyncControllerExample extends StatelessWidget {
 // ...
 
 class SingletonExample extends StatelessWidget {
-  final int mySingletonValue = Singleton.instance(() => 42);
+  const SingletonExample({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
+    final int mySingletonValue = Singleton.instance(() => 42);
+    
     return Text('Singleton Value: $mySingletonValue');
   }
 }
@@ -170,10 +179,14 @@ class MyNotifier extends ChangeNotifier {
 }
 
 class NotifierBuilderExample extends StatelessWidget {
-  final MyNotifier myNotifier = MyNotifier();
+  const NotifierBuilderExample({super.key});
+
 
   @override
   Widget build(BuildContext context) {
+    
+    final MyNotifier myNotifier = MyNotifier();
+    
     return NotifierBuilder(
       notifier: myNotifier,
       builder: (context, child) {
@@ -190,10 +203,4 @@ class NotifierBuilderExample extends StatelessWidget {
     );
   }
 }
-```
-
-## Usage Examples
-
-Include additional usage examples or details about integrating these components into your Flutter application.
-
 ```

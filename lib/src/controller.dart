@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:equatable/equatable.dart';
 
 // Custom callback for asynchronous event emission
 typedef AsyncEmitter<T> = void Function(T value);
@@ -37,22 +37,22 @@ class PendingState extends AsyncState {
 }
 
 // State representing a successful asynchronous operation with data
-class SuccessState<E extends AsyncEvent, T> extends AsyncState {
-  const SuccessState(this.data, {required this.event});
+class SuccessState<T> extends AsyncState {
+  const SuccessState(this.data, {this.event});
 
   final T data;
-  final E event;
+  final AsyncEvent? event;
 
   @override
   List<Object?> get props => [data];
 }
 
 // State representing a failed asynchronous operation
-class FailureState<E extends AsyncEvent, T> extends AsyncState {
-  const FailureState(this.data, {required this.event});
+class FailureState<T> extends AsyncState {
+  const FailureState(this.data, {this.event});
 
   final T data;
-  final E event;
+  final AsyncEvent? event;
 
   @override
   List<Object?> get props => [data];
@@ -60,26 +60,27 @@ class FailureState<E extends AsyncEvent, T> extends AsyncState {
 
 // Controller class to manage asynchronous states and events
 class AsyncController<T> extends ValueNotifier<T> {
-  AsyncController(this.initState, {this.debug = !kReleaseMode})
-      : super(initState) {
-    if (debug) log('$runtimeType created');
+  AsyncController(this.initState, {bool? debug})
+      : _debug = debug ?? !kReleaseMode,
+        super(initState) {
+    if (_debug) log('$runtimeType created');
   }
 
   final T initState;
-  final bool debug;
+  final bool _debug;
 
   // Custom notifier function to update state and log events
   AsyncEmitter<T> _notifier(AsyncEvent<T> event) {
     return (T value) {
+      if (_debug) log('${event.runtimeType}(${super.value} -> $value)', name: '$runtimeType');
       super.value = value;
-      if (debug) log('${event.runtimeType}($value)', name: '$runtimeType');
     };
   }
 
   // Reset the state to the initial state
   void reset() {
     super.value = initState;
-    if (debug) log('$runtimeType reseted');
+    if (_debug) log('$runtimeType reset');
   }
 
   // Run an asynchronous event and update the state accordingly
