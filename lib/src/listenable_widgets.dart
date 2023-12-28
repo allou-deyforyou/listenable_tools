@@ -50,13 +50,13 @@ class _NotifierBuilderState extends State<NotifierBuilder> {
   // Check if the widget can be rebuilt
   bool _canRebuild() {
     final canRebuild = widget.canRebuild?.call();
-    return canRebuild == null || canRebuild;
+    return (canRebuild ?? true);
   }
 
   // Check if the widget can listen
   bool _canListen() {
     final canListen = widget.canListen?.call();
-    return canListen == null || canListen;
+    return (canListen ?? true);
   }
 
   // Callback function called when the Listenable changes
@@ -136,7 +136,7 @@ class _NotifierListenerState extends State<NotifierListener> {
   // Check if the widget can listen
   bool _canListen() {
     final canListen = widget.canListen?.call();
-    return canListen == null || canListen;
+    return (canListen ?? true);
   }
 
   // Callback function called when the Listenable changes

@@ -72,8 +72,10 @@ class AsyncController<T> extends ValueNotifier<T> {
   // Custom notifier function to update state and log events
   AsyncEmitter<T> _notifier(AsyncEvent<T> event) {
     return (T value) {
-      if (_debug) log('${event.runtimeType}(${super.value} -> $value)', name: '$runtimeType');
-      super.value = value;
+      Timer.run(() {
+        if (_debug) log('${event.runtimeType}(${super.value} -> $value)', name: '$runtimeType');
+        super.value = value;
+      });
     };
   }
 

@@ -19,9 +19,7 @@ This project provides custom Flutter components that can be used to enhance your
 - [NotifierBuilder](#notifierbuilder)
   - [NotifierBuilder Classes](#notifierbuilder-classes)
   - [Usage Example](#usage-example-3)
-- [Usage Examples](#usage-examples)
-- [Contributing](#contributing)
-- [License](#license)
+```
 
 ## ListenableBuilder Customization
 

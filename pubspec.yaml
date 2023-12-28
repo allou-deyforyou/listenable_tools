@@ -1,6 +1,6 @@
 name: listenable_tools
 description: This project provides custom Flutter components that can be used to enhance your Flutter applications. The components include customizable builders for working with listenable and notifiable objects, a simple asynchronous state management system, and a singleton pattern implementation.
-version: 2.0.2
+version: 2.0.3
 homepage: https://github.com/allou-deyforyou/listenable_tools
 
 environment:

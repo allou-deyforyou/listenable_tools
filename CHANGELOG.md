@@ -1,3 +1,7 @@
+## 2.0.3
+
+* add Timer.run to AsyncController
+
 ## 2.0.2
 
 * set sealed class AsyncState to abstract class AsyncState
