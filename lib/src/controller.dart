@@ -19,7 +19,7 @@ abstract class AsyncEvent<T> {
 }
 
 // Base abstract class for asynchronous states
-sealed class AsyncState extends Equatable {
+abstract class AsyncState extends Equatable {
   const AsyncState();
 
   @override

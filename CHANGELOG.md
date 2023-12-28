@@ -1,3 +1,7 @@
+## 2.0.2
+
+* set sealed class AsyncState to abstract class AsyncState
+
 ## 2.0.1
 
 * Refactory
