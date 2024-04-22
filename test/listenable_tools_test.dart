@@ -6,7 +6,7 @@ AsyncController<int> get controller =>
     Singleton.instance(() => AsyncController<int>(0));
 
 void main() {
-  final controller = AsyncController<AsyncState>(const InitState());
+  final controller = AsyncController<AsyncState>();
   test('Increment', () async {
     controller.run(const Increment());
 

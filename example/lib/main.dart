@@ -52,7 +52,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _controller = AsyncController<int?>(null, debug: true);
+  final _controller = AsyncController<int?>();
 
   void _showModal() {
     showDialog(
