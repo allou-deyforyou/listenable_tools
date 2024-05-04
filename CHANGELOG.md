@@ -1,5 +1,9 @@
 ## 2.0.4
 
+* edit singleton
+
+## 2.0.4
+
 * add AsyncEvent to PendingState
 * remove InitState
 

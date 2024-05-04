@@ -83,12 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Function to increment counter
   void _incrementCounter() {
-    _controller.run(IncrementCounter(_controller.value ?? 0));
+    _controller.add(IncrementCounter(_controller.value ?? 0));
   }
 
   // Function to decrement counter
   void _decrementCounter() {
-    _controller.run(DecrementCounter(_controller.value ?? 0));
+    _controller.add(DecrementCounter(_controller.value ?? 0));
   }
 
   @override

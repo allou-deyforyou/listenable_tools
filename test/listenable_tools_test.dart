@@ -8,13 +8,13 @@ AsyncController<int> get controller =>
 void main() {
   final controller = AsyncController<AsyncState>();
   test('Increment', () async {
-    controller.run(const Increment());
+    controller.add(const Increment());
 
     debugPrint(controller.value.toString());
   });
 
   test('Decrement', () async {
-    controller.run(const Decrement());
+    controller.add(const Decrement());
 
     debugPrint(controller.value.toString());
   });

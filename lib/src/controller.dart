@@ -74,7 +74,11 @@ class AsyncController<T> extends ValueNotifier<T?> {
   }
 
   // Run an asynchronous event and update the state accordingly
-  Future<void> run(AsyncEvent<T> event) => event.handle(_notifier(event));
+  Future<void> add(AsyncEvent<T> event) {
+    log('${event.runtimeType} executed');
+
+    return event.handle(_notifier(event));
+  }
 
   @override
   void dispose() {
