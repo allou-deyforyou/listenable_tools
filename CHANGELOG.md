@@ -1,4 +1,8 @@
-## 2.0.4
+## 2.0.6
+
+* add _isDisposed to AsyncController
+
+## 2.0.5
 
 * edit singleton
 

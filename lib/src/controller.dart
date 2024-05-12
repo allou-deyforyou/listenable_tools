@@ -54,14 +54,17 @@ class AsyncController<T> extends ValueNotifier<T?> {
   }
 
   final T? initState;
+  bool? _isDisposed;
 
   // Custom notifier function to update state and log events
   AsyncEmitter<T> _notifier(AsyncEvent<T> event) {
     return (T value) {
       Timer.run(() {
-        log('${event.runtimeType}(${super.value} -> $value)', name: '$runtimeType');
+        if (_isDisposed == null) {
+          log('${event.runtimeType}(${super.value} -> $value)', name: '$runtimeType');
 
-        super.value = value;
+          super.value = value;
+        }
       });
     };
   }
@@ -85,5 +88,7 @@ class AsyncController<T> extends ValueNotifier<T?> {
     log('$runtimeType closed');
 
     super.dispose();
+
+    _isDisposed = true;
   }
 }
