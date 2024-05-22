@@ -1,3 +1,7 @@
+## 2.0.7
+
+* add listen to AsyncEmitter
+
 ## 2.0.6
 
 * add _isDisposed to AsyncController
