@@ -12,7 +12,8 @@ class Singleton {
   /// otherwise, it creates a new instance using the provided [createFunction].
   static T instance<T>(T Function() createFunction, [String? name]) {
     _singleton ??= Singleton._(HashMap<String, dynamic>());
-    return _singleton!._entries.putIfAbsent('${T.runtimeType}$name', createFunction);
+    return _singleton!._entries
+        .putIfAbsent('${T.runtimeType}$name', createFunction);
   }
 }
 

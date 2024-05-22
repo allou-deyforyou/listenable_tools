@@ -72,7 +72,8 @@ class AsyncEmitter<T> {
   void call(T value) {
     Timer.run(() {
       if (_controller._isDisposed.value == null) {
-        log('${_event.runtimeType}(${_controller.value} -> $value)', name: '$runtimeType');
+        log('${_event.runtimeType}(${_controller.value} -> $value)',
+            name: '$runtimeType');
 
         _controller.value = value;
       }

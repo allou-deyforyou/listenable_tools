@@ -104,7 +104,8 @@ class _ControllerBuilderState<T> extends State<ControllerBuilder<T>> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.builder(context, _value, widget.child);
+  Widget build(BuildContext context) =>
+      widget.builder(context, _value, widget.child);
 }
 
 // A widget that listens to a ValueListenable<T> and triggers a callback when the value changes
