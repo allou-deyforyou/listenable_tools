@@ -15,7 +15,7 @@ Add `listenable_tools` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  listenable_tools: ^2.0.9
+  listenable_tools: ^2.1.0
 ```
 
 Then, run:
