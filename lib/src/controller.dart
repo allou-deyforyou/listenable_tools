@@ -9,7 +9,7 @@ class AsyncController<T> extends ValueNotifier<T?> {
   AsyncController([this.initState])
       : _isDisposed = ValueNotifier(false),
         super(initState) {
-    log('$runtimeType', name: 'create');
+    log('$runtimeType', name: 'created');
   }
 
   final T? initState;
@@ -22,19 +22,19 @@ class AsyncController<T> extends ValueNotifier<T?> {
 
   /// Reset the state to the initial state
   void reset() {
-    log('$runtimeType($value -> $initState)', name: 'reset');
+    log('$runtimeType($value -> $initState)', name: 'reseted');
     value = initState;
   }
 
   /// Run an asynchronous event and update the state accordingly
   Future<void> add(AsyncEvent<T> event) {
-    log('$event', name: 'add');
+    log('$event', name: 'added');
     return event.handle(_notifier(event));
   }
 
   @override
   void dispose() {
-    log('$runtimeType($value)', name: 'close');
+    log('$runtimeType($value)', name: 'closed');
     _isDisposed.value = true;
     super.dispose();
   }
@@ -75,7 +75,7 @@ class AsyncEmitter<T> {
   /// Emit a new value to the controller
   void call(T value) {
     if (!_controller._isDisposed.value) {
-      log('${_event.runtimeType}(${_controller.value} -> $value)', name: 'emit');
+      log('${_event.runtimeType}(${_controller.value} -> $value)', name: 'emitted');
       _controller.value = value;
     }
   }
