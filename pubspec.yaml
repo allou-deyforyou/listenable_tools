@@ -1,5 +1,5 @@
 name: listenable_tools
-description: This project provides custom Flutter components that can be used to enhance your Flutter applications. The components include customizable builders for working with listenable and notifiable objects, a simple asynchronous state management system, and a singleton pattern implementation.
+description: Welcome to **listenable_tools**, a Dart package designed to simplify state management in your Flutter applications. With `listenable_tools`, you can easily manage singleton instances, ensuring your application has a single source of truth for critical components. This package offers robust and flexible tools for working with `Listenable` objects, providing a streamlined way to build reactive and efficient applications.
 version: 2.0.7
 homepage: https://github.com/allou-deyforyou/listenable_tools
 
