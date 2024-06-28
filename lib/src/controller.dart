@@ -28,7 +28,7 @@ class AsyncController<T> extends ValueNotifier<T?> {
 
   /// Run an asynchronous event and update the state accordingly
   Future<void> add(AsyncEvent<T> event) {
-    log('${event.runtimeType} executed');
+    log('${event.runtimeType} running');
     return event.handle(_notifier(event));
   }
 
@@ -46,6 +46,8 @@ class AsyncEmitter<T> {
 
   final AsyncController<T> _controller;
   final AsyncEvent<T> _event;
+
+  T? get state => _controller.value;
 
   /// Listen to a stream and handle data or errors
   Future<void> listen<V>(
@@ -65,7 +67,7 @@ class AsyncEmitter<T> {
     );
 
     _controller._isDisposed.addListener(subscription.cancel);
-    await completer.future.whenComplete(
+    return completer.future.whenComplete(
       () => _controller._isDisposed.removeListener(subscription.cancel),
     );
   }
@@ -108,10 +110,10 @@ class PendingState<E extends AsyncEvent> extends AsyncState {
 }
 
 /// State representing a successful asynchronous operation with data
-class SuccessState<E extends AsyncEvent, T> extends AsyncState {
+class SuccessState<E extends AsyncEvent> extends AsyncState {
   const SuccessState(this.data, {required this.event});
 
-  final T data;
+  final Object data;
   final E? event;
 
   @override
@@ -119,7 +121,7 @@ class SuccessState<E extends AsyncEvent, T> extends AsyncState {
 }
 
 /// State representing a failed asynchronous operation
-class FailureState<E extends AsyncEvent, T> extends AsyncState {
+class FailureState<E extends AsyncEvent> extends AsyncState {
   const FailureState(this.error, {required this.event});
 
   final Object error;
