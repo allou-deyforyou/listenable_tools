@@ -9,7 +9,7 @@ class AsyncController<T> extends ValueNotifier<T?> {
   AsyncController([this.initState])
       : _isDisposed = ValueNotifier(false),
         super(initState) {
-    log('$runtimeType created');
+    log('$runtimeType', name: 'create');
   }
 
   final T? initState;
@@ -22,19 +22,19 @@ class AsyncController<T> extends ValueNotifier<T?> {
 
   /// Reset the state to the initial state
   void reset() {
-    log('$runtimeType reset');
+    log('$runtimeType($value -> $initState)', name: 'reset');
     value = initState;
   }
 
   /// Run an asynchronous event and update the state accordingly
   Future<void> add(AsyncEvent<T> event) {
-    log('${event.runtimeType} running');
+    log('$event', name: 'add');
     return event.handle(_notifier(event));
   }
 
   @override
   void dispose() {
-    log('$runtimeType closed');
+    log('$runtimeType($value)', name: 'close');
     _isDisposed.value = true;
     super.dispose();
   }
@@ -75,8 +75,7 @@ class AsyncEmitter<T> {
   /// Emit a new value to the controller
   void call(T value) {
     if (!_controller._isDisposed.value) {
-      log('${_event.runtimeType}(${_controller.value} -> $value)',
-          name: '$runtimeType');
+      log('${_event.runtimeType}(${_controller.value} -> $value)', name: 'emit');
       _controller.value = value;
     }
   }
@@ -106,7 +105,10 @@ abstract class AsyncState extends Equatable {
 class PendingState<E extends AsyncEvent> extends AsyncState {
   const PendingState({required this.event});
 
-  final E? event;
+  final E event;
+
+  @override
+  String toString() => '$runtimeType';
 }
 
 /// State representing a successful asynchronous operation with data
@@ -114,7 +116,10 @@ class SuccessState<E extends AsyncEvent> extends AsyncState {
   const SuccessState(this.data, {required this.event});
 
   final Object data;
-  final E? event;
+  final E event;
+
+  @override
+  String toString() => '$runtimeType($data)';
 
   @override
   List<Object?> get props => [data, event];
@@ -125,7 +130,10 @@ class FailureState<E extends AsyncEvent> extends AsyncState {
   const FailureState(this.error, {required this.event});
 
   final Object error;
-  final E? event;
+  final E event;
+
+  @override
+  String toString() => '$runtimeType($error)';
 
   @override
   List<Object?> get props => [error, event];

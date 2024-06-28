@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:listenable_tools/listenable_tools.dart';
 
-AsyncController<int> get controller =>
-    Singleton.instance(() => AsyncController<int>(0));
+AsyncController<int> get controller => Singleton.instance(() => AsyncController<int>(0));
 
 void main() {
   final controller = AsyncController<AsyncState>();
@@ -17,6 +16,10 @@ void main() {
     controller.add(const Decrement());
 
     debugPrint(controller.value.toString());
+  });
+
+  test('Close', () async {
+    controller.dispose();
   });
 }
 
