@@ -33,11 +33,11 @@ class ControllerBuilder<T> extends StatefulWidget {
 }
 
 class _ControllerBuilderState<T> extends State<ControllerBuilder<T>> {
-  late T _value;
+  late ValueNotifier<T> _valueNotifier;
 
   // Initialize the state with the initial value of the controller
   void _initValueState() {
-    _value = widget.controller.value;
+    _valueNotifier = ValueNotifier(widget.controller.value);
 
     // Listen to changes if autoListen is true
     if (widget.autoListen) _changeListenerValue();
@@ -48,20 +48,20 @@ class _ControllerBuilderState<T> extends State<ControllerBuilder<T>> {
 
   // Check if the widget can be rebuilt
   bool _canRebuild() {
-    final canRebuild = widget.canRebuild?.call(_value, widget.controller.value);
+    final canRebuild = widget.canRebuild?.call(_valueNotifier.value, widget.controller.value);
     return (canRebuild ?? true);
   }
 
   // Check if the widget can listen
   bool _canListen() {
-    final canListen = widget.canListen?.call(_value, widget.controller.value);
+    final canListen = widget.canListen?.call(_valueNotifier.value, widget.controller.value);
     return (canListen ?? true);
   }
 
   // Callback function called when the controller value changes
   void _valueChanged() {
     // Update the local value with the new value from the controller
-    _value = widget.controller.value;
+    _valueNotifier.value = widget.controller.value;
 
     _changeListenerValue();
 
@@ -71,7 +71,7 @@ class _ControllerBuilderState<T> extends State<ControllerBuilder<T>> {
   // Callback function called when the controller value changes
   void _changeListenerValue() {
     // Trigger the listener callback if allowed
-    if (_canListen()) widget.listener?.call(context, _value);
+    if (_canListen()) widget.listener?.call(context, _valueNotifier.value);
   }
 
   // Callback function called when the controller value changes
@@ -100,12 +100,12 @@ class _ControllerBuilderState<T> extends State<ControllerBuilder<T>> {
   void dispose() {
     // Remove the listener when the widget is disposed
     widget.controller.removeListener(_valueChanged);
+    _valueNotifier.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) =>
-      widget.builder(context, _value, widget.child);
+  Widget build(BuildContext context) => widget.builder(context, _valueNotifier.value, widget.child);
 }
 
 // A widget that listens to a ValueListenable<T> and triggers a callback when the value changes
@@ -130,11 +130,11 @@ class ControllerListener<T> extends StatefulWidget {
 }
 
 class _ControllerListenerState<T> extends State<ControllerListener<T>> {
-  late T _value;
+  late ValueNotifier<T> _valueNotifier;
 
   // Initialize the state with the initial value of the controller
   void _initValueState() {
-    _value = widget.controller.value;
+    _valueNotifier = ValueNotifier(widget.controller.value);
 
     // Listen to changes if autoListen is true
     if (widget.autoListen) _valueChanged();
@@ -145,7 +145,7 @@ class _ControllerListenerState<T> extends State<ControllerListener<T>> {
 
   // Check if the widget can listen
   bool _canListen() {
-    final canListen = widget.canListen?.call(_value, widget.controller.value);
+    final canListen = widget.canListen?.call(_valueNotifier.value, widget.controller.value);
     return (canListen ?? true);
   }
 
@@ -153,7 +153,8 @@ class _ControllerListenerState<T> extends State<ControllerListener<T>> {
   void _valueChanged() {
     // Update the local value with the new value from the controller
     if (_canListen()) {
-      widget.listener(context, _value = widget.controller.value);
+      _valueNotifier.value = widget.controller.value;
+      widget.listener(context, _valueNotifier.value);
     }
   }
 
@@ -177,6 +178,7 @@ class _ControllerListenerState<T> extends State<ControllerListener<T>> {
   void dispose() {
     // Remove the listener when the widget is disposed
     widget.controller.removeListener(_valueChanged);
+    _valueNotifier.dispose();
     super.dispose();
   }
 

@@ -1,204 +1,217 @@
-```markdown
-# Flutter Custom Components
+## Listenable Tools
 
-This project provides custom Flutter components that can be used to enhance your Flutter applications. The components include customizable builders for working with listenable and notifiable objects, a simple asynchronous state management system, and a singleton pattern implementation.
+Welcome to **listenable_tools**, a Dart package designed to simplify state management in your Flutter applications. With `listenable_tools`, you can easily manage singleton instances, ensuring your application has a single source of truth for critical components. This package offers robust and flexible tools for working with `Listenable` objects, providing a streamlined way to build reactive and efficient applications.
 
-## Table of Contents
+### Features
 
-- [ListenableBuilder Customization](#listenablebuilder-customization)
-  - [ListenableBuilder Classes](#listenablebuilder-classes)
-  - [Usage Example](#usage-example)
-- [AsyncState and AsyncController](#asyncstate-and-asynccontroller)
-  - [AsyncState Classes](#asyncstate-classes)
-  - [AsyncEvent Class](#asyncevent-class)
-  - [AsyncController Class](#asynccontroller-class)
-  - [Usage Example](#usage-example-1)
-- [Singleton Pattern](#singleton-pattern)
-  - [Singleton Class](#singleton-class)
-  - [Usage Example](#usage-example-2)
-- [NotifierBuilder](#notifierbuilder)
-  - [NotifierBuilder Classes](#notifierbuilder-classes)
-  - [Usage Example](#usage-example-3)
+- **AsyncController Management**: Manage asynchronous states and events in your application.
+- **Singleton Management**: Create and manage singleton instances effortlessly.
+- **Notifier Widgets**: Widgets that automatically rebuild or trigger callbacks when a `Listenable` changes.
+- **Multi-Notifier Handling**: Combine multiple `Listenable` objects into a single reactive unit.
+
+### Installation
+
+Add `listenable_tools` to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  listenable_tools: ^1.0.0
 ```
 
-## ListenableBuilder Customization
+Then, run:
 
-### ListenableBuilder Classes
+```sh
+flutter pub get
+```
 
-- **`ListenableBuilder`**: A customizable Flutter widget that rebuilds when a `Listenable` object changes.
-- **`_ListenableBuilderState`**: The corresponding state class for `ListenableBuilder`.
+### Usage
 
-### Usage Example
+#### AsyncController Management
+
+Manage state of counter. Increment or Decrement counter.
 
 ```dart
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:listenable_tools/listenable_tools.dart';
 
-class MyListenable extends ChangeNotifier {
-  int _counter = 0;
-
-  int get counter => _counter;
-
-  void increment() {
-    _counter++;
-    notifyListeners();
+class Increment extends AsyncEvent<AsyncState>  {
+  const Increment();
+  @override
+  Future<void> handle(AsyncEmitter<AsyncState> emit) async {
+    emit(SuccessState(1, event: this));
   }
 }
 
-class ListenableBuilderExample extends StatelessWidget {
-  const ListenableBuilderExample({super.key});
+class Decrement extends AsyncEvent<AsyncState> {
+  const Decrement();
+  @override
+  Future<void> handle(AsyncEmitter<AsyncState> emit) async {
+    emit(SuccessState(2, event: this));
+  }
+}
+
+class MyAsyncWidget extends StatefulWidget {
+  const MyAsyncWidget({super.key});
+
+  @override
+  State<MyAsyncWidget> createState() => _MyAsyncWidgetState();
+}
+
+class _MyAsyncWidgetState extends State<MyAsyncWidget> {
+  final _controller = AsyncController<AsyncState>(null);
+
+  void _incrementCounter() async {
+    _controller.add(const Increment());
+  }
+
+  void _decrementCounter() async {
+    _controller.add(const Decrement());
+  }
 
   @override
   Widget build(BuildContext context) {
-    
-    final MyListenable myNotifier = MyListenable();
-    
-    return ListenableBuilder(
-      listenable: myNotifier,
-      builder: (context, child) {
-        return Column(
-          children: [
-            Text('Counter: ${myNotifier.counter}'),
-            ElevatedButton(
-              onPressed: () => myNotifier.increment(),
-              child: Text('Increment'),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text("Counter"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'You have pushed the button this many times:',
             ),
-          ],
-        );
-      },
-    );
-  }
-}
-```
-
-## AsyncState, AsyncEvent and AsyncController
-
-### AsyncState Classes
-
-- **`InitState`**: Represents the initial state of an asynchronous operation.
-- **`PendingState`**: Represents a state indicating that an asynchronous operation is pending.
-- **`SuccessState<T>`**: Represents a state with successful data.
-- **`FailureState<T>`**: Represents a state with a failed asynchronous event.
-
-### AsyncEvent Class
-
-- **`AsyncEvent<T>`**: An abstract class representing an asynchronous event.
-
-### AsyncController Class
-
-- **`AsyncController<T>`**: A controller for managing asynchronous states.
-
-### Usage Example
-
-```dart
-import 'package:flutter/widgets.dart';
-
-class MyAsyncEvent extends AsyncEvent<int> {
-  const MyAsyncEvent();
-  @override
-  Future<void> handle(AsyncEmitter<int> emit) async {
-    await Future.delayed(Duration(seconds: 2));
-    emit(42);
-  }
-}
-
-class AsyncControllerExample extends StatelessWidget {
-  const AsyncControllerExample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    
-    final AsyncController<int> myController = AsyncController<int>(0, debug: true);
-    
-    return ControllerBuilder(
-      controller: myController,
-      builder: (context, data, child) {
-        return Column(
-          children: [
-            Text('Data: $data'),
-            ElevatedButton(
-              onPressed: () async {
-                await myController.run(const MyAsyncEvent());
+            ControllerBuilder(
+              controller: _controller,
+              builder: (context, state, child) {
+                if (state case SuccessState<Decrement, int>(:final data)) {
+                  return Text(
+                    '$data',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  );
+                }
+                return const SizedBox.shrink();
               },
-              child: Text('Run Async Event'),
             ),
           ],
-        );
-      },
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: _incrementCounter,
+            tooltip: 'Increment',
+            child: const Icon(CupertinoIcons.add),
+          ),
+          const SizedBox(height: 12.0),
+          FloatingActionButton(
+            onPressed: _decrementCounter,
+            tooltip: 'Decrement',
+            child: const Icon(CupertinoIcons.minus),
+          ),
+        ],
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
 ```
 
-## Singleton Pattern
+#### Singleton Management
 
-### Singleton Class
-
-- **`Singleton`**: A simple implementation of the singleton pattern.
-
-### Usage Example
+Ensure only one instance of a type exists in your application:
 
 ```dart
-// ...
+import 'package:listenable_tools/listenable_tools.dart';
 
-class SingletonExample extends StatelessWidget {
-  const SingletonExample({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    
-    final int mySingletonValue = Singleton.instance(() => 42);
-    
-    return Text('Singleton Value: $mySingletonValue');
-  }
-}
+// Create or retrieve a singleton instance
+MyService myService = singleton(() => MyService(), 'myServiceName');
 ```
 
-## NotifierBuilder
+#### Notifier Widgets
 
-### NotifierBuilder Classes
-
-- **`NotifierBuilder`**: A customizable Flutter widget similar to `ListenableBuilder` but named to reflect custom notifiers.
-- **`_NotifierBuilderState`**: The corresponding state class for `NotifierBuilder`.
-
-### Usage Example
+Easily create widgets that react to changes in `Listenable` objects:
 
 ```dart
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:listenable_tools/listenable_tools.dart';
 
-class MyNotifier extends ChangeNotifier {
-  bool _enabled = false;
-
-  bool get enabled => _enabled;
-
-  void toggle() {
-    _enabled = !_enabled;
-    notifyListeners();
-  }
-}
-
-class NotifierBuilderExample extends StatelessWidget {
-  const NotifierBuilderExample({super.key});
-
+class MyWidget extends StatelessWidget {
+  final AsyncController<int> counter = AsyncController<int>(0);
 
   @override
   Widget build(BuildContext context) {
-    
-    final MyNotifier myNotifier = MyNotifier();
-    
     return NotifierBuilder(
-      notifier: myNotifier,
+      listenable: counter,
       builder: (context, child) {
-        return Column(
-          children: [
-            Text('Enabled: ${myNotifier.enabled}'),
-            ElevatedButton(
-              onPressed: () => myNotifier.toggle(),
-              child: Text('Toggle'),
-            ),
-          ],
-        );
+        return Text('Counter: ${counter.value}');
       },
     );
   }
 }
 ```
+
+#### Multi-Notifier Handling
+
+Combine multiple `Listenable` objects and react to their changes collectively:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:listenable_tools/listenable_tools.dart';
+
+class MyMultiNotifierWidget extends StatelessWidget {
+  final AsyncController<int> counter1 = AsyncController<int>(0);
+  final ValueNotifier<int> counter2 = ValueNotifier<int>(0);
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiNotifierBuilder(
+      listenables: [counter1, counter2],
+      builder: (context, child) {
+        return Text('Counters: ${counter1.value} and ${counter2.value}');
+      },
+    );
+  }
+}
+```
+
+### API Reference
+
+#### AsyncController Management
+
+- `AsyncController<T>`: A controller class for managing asynchronous states and events. Provides methods to handle asynchronous events and update states accordingly..
+- `AsyncEmitter<T>`: A custom callback for asynchronous event emission. Used to notifier a state of Controller.
+- `AsyncEvent<T>`:  A base abstract class for asynchronous events. Has a method `handle(AsyncEmitter<T> emit)` to handle event. 
+- `AsyncState`: A base abstract class for asynchronous states. Used to create multiple states.
+- `PendingState<E extends AsyncEvent>`: State representing that an asynchronous operation is pending. Provides params `AsyncEvent? event`.
+- `SuccessState<E extends AsyncEvent, T>`: State representing a successful asynchronous operation with data. Provides params `T data` and `AsyncEvent? event`.
+- `FailureState<E extends AsyncEvent, T>`: State representing a failed asynchronous operation. Provides params `Object error` and `AsyncEvent? event`.
+
+#### Singleton
+
+- `T instance<T>(T Function() createFunction, [String? name])`: Retrieves an existing singleton instance or creates a new one.
+- `T singleton<T>(T Function() createFunction, [String? name])`: Shorthand function for creating or retrieving a singleton instance.
+
+#### Notifier Widgets
+
+- `NotifierBuilder`: A widget that rebuilds when a `Listenable` changes.
+- `NotifierListener`: A widget that listens to a `Listenable` and triggers a callback when it changes.
+- `MultiNotifierBuilder`: A widget that rebuilds when any of the provided `Listenable` objects change.
+- `MultiNotifierListener`: A widget that listens to multiple `Listenable` objects and triggers a callback when any of them change.
+
+### Contributing
+
+We welcome contributions! Please read our [contributing guidelines](CONTRIBUTING.md) and feel free to submit pull requests.
+
+### License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Acknowledgements
+
+Special thanks to the Flutter community for their support and contributions.
+
+---
+
+Start making your Flutter applications more reactive and maintainable with `listenable_tools`! If you have any questions or feedback, please open an issue or reach out to us. Happy coding!

@@ -2,8 +2,8 @@ import 'dart:collection';
 
 class Singleton {
   const Singleton._(this._entries);
-  final HashMap<String, dynamic> _entries;
 
+  final HashMap<String, dynamic> _entries;
   static Singleton? _singleton;
 
   /// Get a singleton instance of type [T].
@@ -12,8 +12,13 @@ class Singleton {
   /// otherwise, it creates a new instance using the provided [createFunction].
   static T instance<T>(T Function() createFunction, [String? name]) {
     _singleton ??= Singleton._(HashMap<String, dynamic>());
-    return _singleton!._entries
-        .putIfAbsent('${T.runtimeType}$name', createFunction);
+    String key = _generateKey<T>(name);
+    return _singleton!._entries.putIfAbsent(key, createFunction) as T;
+  }
+
+  /// Generates a unique key for the type [T] and an optional [name].
+  static String _generateKey<T>([String? name]) {
+    return '${T.toString()}${name ?? ''}';
   }
 }
 

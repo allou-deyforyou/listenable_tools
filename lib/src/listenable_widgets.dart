@@ -7,8 +7,7 @@ typedef NotifierWidgetListener = void Function(BuildContext context);
 typedef NotifierCanCallBack = bool Function();
 
 // A callback function that takes a BuildContext and a Widget (child) as parameters
-typedef NotifierWidgetBuilder = Widget Function(
-    BuildContext context, Widget? child);
+typedef NotifierWidgetBuilder = Widget Function(BuildContext context, Widget? child);
 
 // A widget that rebuilds when a Listenable changes
 class NotifierBuilder extends StatefulWidget {
@@ -24,14 +23,11 @@ class NotifierBuilder extends StatefulWidget {
   });
 
   final Listenable listenable;
-
   final NotifierWidgetListener? listener;
   final NotifierWidgetBuilder builder;
-
   final NotifierCanCallBack? canRebuild;
   final NotifierCanCallBack? canListen;
   final bool autoListen;
-
   final Widget? child;
 
   @override
@@ -39,8 +35,12 @@ class NotifierBuilder extends StatefulWidget {
 }
 
 class _NotifierBuilderState extends State<NotifierBuilder> {
+  late ValueNotifier<void> _valueNotifier;
+
   // Initialize the value state and add a listener to the Listenable
   void _initValueState() {
+    _valueNotifier = ValueNotifier<void>(null);
+
     // Listen to changes if autoListen is true
     if (widget.autoListen) _changeListenerValue();
 
@@ -62,7 +62,6 @@ class _NotifierBuilderState extends State<NotifierBuilder> {
   // Callback function called when the Listenable changes
   void _valueChanged() {
     _changeListenerValue();
-
     _changeBuilderValue();
   }
 
@@ -75,7 +74,10 @@ class _NotifierBuilderState extends State<NotifierBuilder> {
   // Callback function called when the controller value changes
   void _changeBuilderValue() {
     // Rebuild the widget if allowed
-    if (_canRebuild()) setState(() {});
+    if (_canRebuild()) {
+      _valueNotifier.value = null; // Trigger ValueNotifier update
+      setState(() {});
+    }
   }
 
   @override
@@ -98,6 +100,7 @@ class _NotifierBuilderState extends State<NotifierBuilder> {
   void dispose() {
     // Remove the listener when the widget is disposed
     widget.listenable.removeListener(_valueChanged);
+    _valueNotifier.dispose();
     super.dispose();
   }
 
@@ -127,8 +130,12 @@ class NotifierListener extends StatefulWidget {
 }
 
 class _NotifierListenerState extends State<NotifierListener> {
+  late ValueNotifier<void> _valueNotifier;
+
   // Initialize the value state and add a listener to the Listenable
   void _initValueState() {
+    _valueNotifier = ValueNotifier<void>(null);
+
     if (widget.autoListen) _valueChanged();
     widget.listenable.addListener(_valueChanged);
   }
@@ -143,6 +150,7 @@ class _NotifierListenerState extends State<NotifierListener> {
   void _valueChanged() {
     // Trigger the listener callback if allowed
     if (_canListen()) {
+      _valueNotifier.value = null; // Trigger ValueNotifier update
       widget.listener(context);
     }
   }
@@ -167,6 +175,7 @@ class _NotifierListenerState extends State<NotifierListener> {
   void dispose() {
     // Remove the listener when the widget is disposed
     widget.listenable.removeListener(_valueChanged);
+    _valueNotifier.dispose();
     super.dispose();
   }
 
@@ -188,15 +197,13 @@ class MultiNotifierBuilder extends StatelessWidget {
   });
 
   final List<Listenable> listenables;
-
   final NotifierWidgetListener? listener;
   final NotifierWidgetBuilder builder;
-
   final NotifierCanCallBack? canRebuild;
   final NotifierCanCallBack? canListen;
   final bool autoListen;
-
   final Widget? child;
+
   @override
   Widget build(BuildContext context) {
     // Use NotifierBuilder with Listenable.merge to handle multiple listenables

@@ -1,3 +1,7 @@
+## 2.0.8
+
+* add comment and edit README.md
+
 ## 2.0.7
 
 * add listen to AsyncEmitter
