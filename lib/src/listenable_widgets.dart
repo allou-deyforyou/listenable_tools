@@ -7,7 +7,8 @@ typedef NotifierWidgetListener = void Function(BuildContext context);
 typedef NotifierCanCallBack = bool Function();
 
 // A callback function that takes a BuildContext and a Widget (child) as parameters
-typedef NotifierWidgetBuilder = Widget Function(BuildContext context, Widget? child);
+typedef NotifierWidgetBuilder = Widget Function(
+    BuildContext context, Widget? child);
 
 // A widget that rebuilds when a Listenable changes
 class NotifierBuilder extends StatefulWidget {

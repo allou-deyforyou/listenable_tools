@@ -48,13 +48,15 @@ class _ControllerBuilderState<T> extends State<ControllerBuilder<T>> {
 
   // Check if the widget can be rebuilt
   bool _canRebuild() {
-    final canRebuild = widget.canRebuild?.call(_valueNotifier.value, widget.controller.value);
+    final canRebuild =
+        widget.canRebuild?.call(_valueNotifier.value, widget.controller.value);
     return (canRebuild ?? true);
   }
 
   // Check if the widget can listen
   bool _canListen() {
-    final canListen = widget.canListen?.call(_valueNotifier.value, widget.controller.value);
+    final canListen =
+        widget.canListen?.call(_valueNotifier.value, widget.controller.value);
     return (canListen ?? true);
   }
 
@@ -105,7 +107,8 @@ class _ControllerBuilderState<T> extends State<ControllerBuilder<T>> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.builder(context, _valueNotifier.value, widget.child);
+  Widget build(BuildContext context) =>
+      widget.builder(context, _valueNotifier.value, widget.child);
 }
 
 // A widget that listens to a ValueListenable<T> and triggers a callback when the value changes
@@ -145,7 +148,8 @@ class _ControllerListenerState<T> extends State<ControllerListener<T>> {
 
   // Check if the widget can listen
   bool _canListen() {
-    final canListen = widget.canListen?.call(_valueNotifier.value, widget.controller.value);
+    final canListen =
+        widget.canListen?.call(_valueNotifier.value, widget.controller.value);
     return (canListen ?? true);
   }
 
