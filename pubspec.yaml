@@ -1,6 +1,6 @@
 name: listenable_tools
 description: Welcome to Listenable Tools, a Dart package designed to simplify state management in your Flutter applications.
-version: 2.0.9
+version: 2.1.0
 homepage: https://github.com/allou-deyforyou/listenable_tools
 
 environment:

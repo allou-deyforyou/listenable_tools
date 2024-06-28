@@ -75,7 +75,8 @@ class AsyncEmitter<T> {
   /// Emit a new value to the controller
   void call(T value) {
     if (!_controller._isDisposed.value) {
-      log('${_event.runtimeType}(${_controller.value} -> $value)', name: 'emitted');
+      log('${_event.runtimeType}(${_controller.value} -> $value)',
+          name: 'emitted');
       _controller.value = value;
     }
   }
