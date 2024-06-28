@@ -87,6 +87,7 @@ abstract class AsyncEvent<T> {
   @override
   String toString() => '$runtimeType';
 
+  /// Function to handle asynchronous event and to notify states.
   @protected
   Future<void> handle(AsyncEmitter<T> emit);
 }
